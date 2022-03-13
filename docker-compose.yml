@@ -1,0 +1,39 @@
+version: '3'
+services:
+  ganache:
+    image: trufflesuite/ganache-cli:latest
+    ports:
+      - 8545:8545
+  graph-node:
+    image: graphprotocol/graph-node:latest
+    ports:
+      - '8000:8000'
+      - '8001:8001'
+      - '8020:8020'
+      - '8030:8030'
+      - '8040:8040'
+    depends_on:
+      - ipfs
+      - postgres
+    environment:
+      postgres_host: postgres
+      postgres_user: graph-node
+      postgres_pass: postgres
+      postgres_db: graph-node
+      ipfs: 'ipfs:5001'
+      ethereum: 'mainnet:https://mainnet.infura.io/v3/d17ed9714e00454c860ccdc4facf53d7'
+      RUST_LOG: info
+      GRAPH_LOG: debug
+  ipfs:
+    image: ipfs/go-ipfs:v0.10.0
+    ports:
+      - '5001:5001'
+  postgres:
+    image: postgres:12
+    ports:
+      - '5432:5432'
+    command: ['postgres', '-cshared_preload_libraries=pg_stat_statements']
+    environment:
+      POSTGRES_USER: graph-node
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: graph-node
