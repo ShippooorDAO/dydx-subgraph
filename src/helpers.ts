@@ -13,6 +13,7 @@ import {
   HistoricalBalance,
   TotalTreasuryHistoricalBalance
 } from '../generated/schema';
+import { BIGINT_ZERO } from './common/constants';
 
 export const ADDRESS_ZERO = '0x0000000000000000000000000000000000000000'
 
@@ -126,9 +127,10 @@ export function saveCommunityTreasuryTransaction(
   timestamp: BigInt,
   blockNumber: BigInt,
   blockHash: Bytes,
-  transactionHash: Bytes
+  transactionHash: Bytes,
+  symbol: string,
 ): void {
-  const id = `community-${txHash.toHexString()}`;
+  const id = `community-${symbol}-${txHash.toHexString()}`;
 
   let tx: CommunityTreasuryTransaction | null =
     CommunityTreasuryTransaction.load(id)
@@ -147,6 +149,7 @@ export function saveCommunityTreasuryTransaction(
   tx.blockNumber = blockNumber;
   tx.blockHash = blockHash;
   tx.transactionHash = transactionHash;
+  tx.currencySymbol = symbol;
 
   tx.save();
 }
@@ -159,9 +162,10 @@ export function saveGrantsProgramTreasuryTransaction(
   timestamp: BigInt,
   blockNumber: BigInt,
   blockHash: Bytes,
-  transactionHash: Bytes
+  transactionHash: Bytes,
+  symbol: string
 ): void {
-  const id = `grants-${txHash.toHexString()}`;
+  const id = `grants-${symbol}-${txHash.toHexString()}`;
   
   let tx: GrantsProgramTreasuryTransaction | null =
     GrantsProgramTreasuryTransaction.load(id)
@@ -180,6 +184,7 @@ export function saveGrantsProgramTreasuryTransaction(
   tx.blockNumber = blockNumber;
   tx.blockHash = blockHash;
   tx.transactionHash = transactionHash;
+  tx.currencySymbol = symbol;
 
   tx.save();
 }
